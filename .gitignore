@@ -1,0 +1,59 @@
+# ============================================================
+# Build artifacts — never commit, regenerable from source.
+# ============================================================
+build/
+build-*/
+cmake-build-*/
+out/
+
+# CMake top-level cache (if someone runs cmake in source dir by mistake)
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+CMakeUserPresets.json
+
+# ============================================================
+# Compiled output of any kind.
+# ============================================================
+*.exe
+*.dll
+*.obj
+*.o
+*.a
+*.lib
+*.pdb
+*.ilk
+*.exp
+*.ipdb
+*.iobj
+*.rsp
+
+# Inno Setup installer output. The Setup.exe is shipped via GitHub
+# Releases, NOT committed to the repo.
+installer/*.exe
+
+# ============================================================
+# Whisper model files. Too large for Git (GitHub rejects files
+# over 100 MB), and not source — they're downloads from
+# huggingface.co/ggerganov/whisper.cpp.
+# ============================================================
+*.bin
+ggml-*.bin
+
+# ============================================================
+# IDE / editor metadata. Per-user, never share.
+# ============================================================
+.idea/
+.vs/
+.vscode/
+*.swp
+*.suo
+*.user
+*.vcxproj.user
+
+# ============================================================
+# OS / explorer junk.
+# ============================================================
+Thumbs.db
+desktop.ini
+.DS_Store
