@@ -1,0 +1,8 @@
+// Windows resource script — compiled by rc.exe at build time, the
+// resulting .res is linked into subtitle_extractor_gui.exe so File
+// Explorer / taskbar / alt-tab can display the icon.
+//
+// CONVENTION: the icon with the lowest numeric ID becomes the
+// executable's default icon (the one Windows shows in Explorer).
+// Many sources use IDI_ICON1 = 1 for this reason.
+IDI_ICON1 ICON "icon.ico"

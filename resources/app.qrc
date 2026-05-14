@@ -1,0 +1,9 @@
+<!-- Qt resource file — AUTORCC in CMakeLists.txt picks this up and
+     compiles it via Qt's rcc.exe. Listed files are baked INTO the
+     binary, so QIcon(":/icons/icon.ico") works no matter what
+     directory the .exe is launched from. -->
+<RCC>
+    <qresource prefix="/icons">
+        <file>icon.ico</file>
+    </qresource>
+</RCC>
