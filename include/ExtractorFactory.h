@@ -19,6 +19,7 @@ struct FactoryOptions {
     // Whisper options
     std::string whisperModelPath{"ggml-base.en.bin"};
     std::string whisperLanguage{"en"};
+    bool        whisperTranslate{false};  // translate audio -> English text
 
     // OCR options
     double      ocrSampleFps{2.0};   // frames per second to sample

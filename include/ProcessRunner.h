@@ -42,6 +42,15 @@ public:
     // cancel token is set (in which case the subprocess is terminated
     // and result.cancelled == true).
     static ProcessResult runStreaming(const StreamingProcessOptions& opts);
+
+    // Set a directory that gets checked FIRST when launching a tool.
+    // Used by the GUI to prefer bundled ffmpeg.exe next to the app
+    // over whatever PATH happens to provide.
+    //
+    // The library itself is Qt-free; the caller (gui_main.cpp) supplies
+    // the directory via QCoreApplication::applicationDirPath(). Pass an
+    // empty string to disable the override.
+    static void setBundledBinaryDir(const std::string& dir);
 };
 
 } // namespace subext

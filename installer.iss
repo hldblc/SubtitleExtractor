@@ -82,6 +82,36 @@ Name: "desktopicon"; Description: "Create a &desktop shortcut"; \
 Source: "build\Release\*"; DestDir: "{app}"; \
     Flags: recursesubdirs ignoreversion
 
+; Bundle the default Whisper model if it's sitting at the project root.
+; Friends-of-Halit get a working program with zero setup. Adds ~147 MB.
+; #ifexist keeps the script working on machines that don't have a copy.
+#ifexist "ggml-base.en.bin"
+Source: "ggml-base.en.bin"; DestDir: "{app}"; Flags: ignoreversion
+#endif
+
+; Bundle ffmpeg.exe so friends don't need a separate FFmpeg install.
+; The gyan.dev "full_build" is a single static binary (~227 MB raw,
+; ~100 MB after LZMA2 compression). ProcessRunner::setBundledBinaryDir
+; in gui_main.cpp causes the GUI to prefer this copy over PATH.
+;
+; The hard-coded source path matches winget's install layout for
+; Gyan.FFmpeg on Halit's machine. If you reinstall FFmpeg via another
+; method, update this path or copy ffmpeg.exe somewhere stable.
+#define FFmpegExe "C:\Users\charl\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.1.1-full_build\bin\ffmpeg.exe"
+#ifexist FFmpegExe
+Source: {#FFmpegExe}; DestDir: "{app}"; Flags: ignoreversion
+#endif
+
+; Bundle Tesseract OCR for the "burned-in subtitles" mode.
+; Layout: tesseract.exe + ~50 sibling DLLs all in {app}, plus
+; tessdata\eng.traineddata for English. Tesseract searches relative
+; to its own exe path, so a flat install works.
+#ifexist "C:\Program Files\Tesseract-OCR\tesseract.exe"
+Source: "C:\Program Files\Tesseract-OCR\tesseract.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Program Files\Tesseract-OCR\*.dll";        DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Program Files\Tesseract-OCR\tessdata\eng.traineddata"; DestDir: "{app}\tessdata"; Flags: ignoreversion
+#endif
+
 [Icons]
 ; Start Menu shortcut.
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"

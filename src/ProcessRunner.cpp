@@ -3,6 +3,7 @@
 
 #include <array>
 #include <cstdio>
+#include <filesystem>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -17,6 +18,33 @@
 namespace subext {
 
 namespace {
+
+// Process-wide search dir for bundled binaries. Set once at app startup
+// from gui_main.cpp; empty in the CLI build (which keeps PATH-only).
+std::string g_bundledBinDir;
+
+// Given a bare tool name like "ffmpeg", try to resolve it to a bundled
+// sibling-of-app file. If the bundled file exists, return its absolute
+// path; otherwise return the name unchanged (CreateProcess / shell will
+// then fall back to PATH).
+std::string resolveExecutable(const std::string& name) {
+    if (g_bundledBinDir.empty()) return name;
+    // If the caller already passed an absolute or relative path, don't
+    // second-guess them.
+    if (name.find('/') != std::string::npos ||
+        name.find('\\') != std::string::npos) {
+        return name;
+    }
+    namespace fs = std::filesystem;
+#ifdef _WIN32
+    fs::path candidate = fs::path(g_bundledBinDir) / (name + ".exe");
+#else
+    fs::path candidate = fs::path(g_bundledBinDir) / name;
+#endif
+    std::error_code ec;
+    if (fs::exists(candidate, ec)) return candidate.string();
+    return name;
+}
 
 // Quote an argv element so the shell / CreateProcess parser sees it
 // as a single token. Cheap but correct enough for our pre-validated
@@ -97,7 +125,8 @@ ProcessResult ProcessRunner::runStreaming(const StreamingProcessOptions& opts) {
 
     PROCESS_INFORMATION pi{};
 
-    std::string cmd = buildCommandLine(opts.executable, opts.args);
+    std::string cmd = buildCommandLine(resolveExecutable(opts.executable),
+                                       opts.args);
     // CreateProcessA wants a writable buffer for lpCommandLine.
     std::vector<char> cmdBuf(cmd.begin(), cmd.end());
     cmdBuf.push_back('\0');
@@ -186,7 +215,8 @@ ProcessResult ProcessRunner::runStreaming(const StreamingProcessOptions& opts) {
 ProcessResult ProcessRunner::runStreaming(const StreamingProcessOptions& opts) {
     ProcessResult result;
 
-    std::string cmd = buildCommandLine(opts.executable, opts.args) + " 2>&1";
+    std::string cmd = buildCommandLine(resolveExecutable(opts.executable),
+                                       opts.args) + " 2>&1";
     FILE* raw = popen(cmd.c_str(), "r");
     if (!raw) throw std::runtime_error("popen failed for: " + opts.executable);
 
@@ -208,6 +238,10 @@ ProcessResult ProcessRunner::runStreaming(const StreamingProcessOptions& opts) {
 }
 
 #endif
+
+void ProcessRunner::setBundledBinaryDir(const std::string& dir) {
+    g_bundledBinDir = dir;
+}
 
 // Old blocking API: implemented on top of streaming, with a
 // buffering callback that just appends each line to result.output.

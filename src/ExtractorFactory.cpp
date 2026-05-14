@@ -13,7 +13,8 @@ ExtractorFactory::create(const FactoryOptions& opts) {
         return std::make_unique<EmbeddedExtractor>(opts.embeddedStreamIndex);
     case Mode::Whisper:
         return std::make_unique<WhisperExtractor>(
-            opts.whisperModelPath, opts.whisperLanguage);
+            opts.whisperModelPath, opts.whisperLanguage,
+            opts.whisperTranslate);
     case Mode::Ocr:
         return std::make_unique<OcrExtractor>(
             opts.ocrSampleFps, opts.ocrBottomFrac, opts.ocrLang);

@@ -85,12 +85,17 @@ WhisperExtractor::extract(const std::filesystem::path& videoPath) {
         return out;
     };
 
-    const std::string filter =
+    std::string filter =
         "whisper=model="  + esc(modelFs)
       + ":language="      + language_
       + ":destination="   + esc(outFs)
       + ":format=srt"
       + ":queue=10";
+    if (translate_) {
+        // FFmpeg's whisper filter supports translate=true to convert
+        // non-English audio to English text in a single pass.
+        filter += ":translate=true";
+    }
 
     log::info("Running ffmpeg with built-in whisper filter (transcribing)...");
     log::debug("Filter: " + filter);

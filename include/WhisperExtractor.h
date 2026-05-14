@@ -12,9 +12,11 @@ namespace subext {
 class WhisperExtractor : public IExtractor {
 public:
     WhisperExtractor(std::string modelPath,
-                     std::string language = "en")
+                     std::string language = "en",
+                     bool        translate = false)
         : modelPath_(std::move(modelPath))
-        , language_(std::move(language)) {}
+        , language_(std::move(language))
+        , translate_(translate) {}
 
     std::vector<SubtitleEntry>
     extract(const std::filesystem::path& videoPath) override;
@@ -24,6 +26,7 @@ public:
 private:
     std::string modelPath_;
     std::string language_;
+    bool        translate_;
 };
 
 } // namespace subext
