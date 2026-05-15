@@ -21,7 +21,7 @@
 ; ============================================================
 
 #define MyAppName       "Subtitle Extractor"
-#define MyAppVersion    "1.0"
+#define MyAppVersion    "1.0.3"
 #define MyAppPublisher  "Halit"
 #define MyAppExeName    "subtitle_extractor_gui.exe"
 

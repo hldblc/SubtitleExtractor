@@ -35,7 +35,7 @@ target_link_libraries(subtitle_extractor PRIVATE subext_lib)
 # IMPORTANT: keep in sync with installer.iss's MyAppVersion. A polished
 # setup would generate both from one source via configure_file(), but
 # manual sync is fine for a learning project — just bump in two places.
-set(APP_VERSION "1.0.0")
+set(APP_VERSION "1.0.3")
 
 # Qt GUI executable (only built when Qt is found).
 # Network is needed by UpdateChecker for the GitHub Releases API call.
